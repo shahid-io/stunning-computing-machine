@@ -5,7 +5,6 @@ export type TaskDocument = Task & Document;
 
 @Schema({ timestamps: true })
 export class Task {
-
     @Prop({ required: true })
     type: string;
 
@@ -13,20 +12,13 @@ export class Task {
         type: String,
         enum: ['pending', 'processing', 'completed', 'failed'],
         default: 'pending',
-        required: true,
     })
     status: string;
 
-    @Prop({
-        type: Number,
-        default: 0,
-        max: 3,
-        required: true,
-        min: 0,
-    })
+    @Prop({ type: Number, default: 0, max: 3 })
     attempts: number;
 
-    @Prop({ type: String })
+    @Prop({ type: String,  })
     errorMessage?: string;
 }
 

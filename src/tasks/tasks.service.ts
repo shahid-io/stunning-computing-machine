@@ -3,10 +3,20 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { Task } from './schemas/task.schema';
 import { CreateTaskInput } from './dto/create-task-input';
+import { Queue } from 'bull';
+import { InjectQueue } from '@nestjs/bull';
 @Injectable()
 export class TasksService {
-    constructor(@InjectModel(Task.name) private taskModel: Model<Task>) { }
+    constructor(
+        @InjectModel(Task.name) private taskModel: Model<Task>,
+        @InjectQueue('tasks') private readonly tasksQueue: Queue,
+    ) { }
 
+    async createTask(createTaskDto: CreateTaskInput) {
+        const task = await this.taskModel.create(createTaskDto);
+        await this.tasksQueue.add('process', { taskId: task._id });  
+        return task;
+    }
     async create(createTaskDto: CreateTaskInput): Promise<Task> {
         const createdTask = new this.taskModel(createTaskDto);
         return createdTask.save();

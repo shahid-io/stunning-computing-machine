@@ -1,14 +1,17 @@
+import { BullModule } from '@nestjs/bull';
 import { Module } from '@nestjs/common';
-import { MongooseModule } from '@nestjs/mongoose';
-import { Task, TaskSchema } from './schemas/task.schema';
-import { TasksService } from './tasks.service';
-import { TasksController } from './tasks.controller';
+import { ConfigModule, ConfigService } from '@nestjs/config';
+import { QUEUE_NAMES, getQueueConfig } from '@utils/queue.utils';
 
 @Module({
     imports: [
-        MongooseModule.forFeature([{ name: Task.name, schema: TaskSchema }]),
+        BullModule.registerQueueAsync({
+            name: QUEUE_NAMES.TASKS,
+            imports: [ConfigModule],
+            useFactory: (configService: ConfigService) =>
+                getQueueConfig(configService),
+            inject: [ConfigService],
+        }),
     ],
-    providers: [TasksService],
-    controllers: [TasksController],
 })
 export class TasksModule { }

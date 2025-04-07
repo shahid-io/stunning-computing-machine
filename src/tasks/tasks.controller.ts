@@ -16,7 +16,7 @@ export class TasksController {
 
     @Post()
     async create(@Body() createTaskDto: CreateTaskInput) {
-        const task = await this.tasksService.create(createTaskDto);
+        const task = await this.tasksService.createTask(createTaskDto);
         return { data: task, message: 'Task submitted successfully' };
     }
 
