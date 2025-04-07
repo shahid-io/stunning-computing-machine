@@ -1,5 +1,6 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document } from 'mongoose';
+import { TaskStatus } from '../enums/task-status.enum';
 
 export type TaskDocument = Task & Document;
 
@@ -10,8 +11,7 @@ export class Task {
 
     @Prop({
         type: String,
-        enum: ['pending', 'processing', 'completed', 'failed'],
-        default: 'pending',
+        default: TaskStatus.Pending,
     })
     status: string;
 

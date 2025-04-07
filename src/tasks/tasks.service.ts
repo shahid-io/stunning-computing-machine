@@ -5,6 +5,8 @@ import { Task } from './schemas/task.schema';
 import { CreateTaskInput } from './dto/create-task-input';
 import { Queue } from 'bull';
 import { InjectQueue } from '@nestjs/bull';
+import { TaskStatus } from './enums/task-status.enum';
+
 @Injectable()
 export class TasksService {
     constructor(
@@ -13,34 +15,25 @@ export class TasksService {
     ) { }
 
     async createTask(createTaskDto: CreateTaskInput) {
-        const task = await this.taskModel.create(createTaskDto);
-        await this.tasksQueue.add('process', { taskId: task._id });  
+        const task = await this.taskModel.create({
+            ...createTaskDto,
+            status: TaskStatus.Pending,
+            attempts: 0
+        });
+
+        await this.tasksQueue.add('process', {
+            taskId: task._id.toString()
+        }, {
+            attempts: 3,
+            backoff: {
+                type: 'exponential',
+                delay: 1000
+            }
+        });
+
         return task;
     }
-    async create(createTaskDto: CreateTaskInput): Promise<Task> {
-        const createdTask = new this.taskModel(createTaskDto);
-        return createdTask.save();
-    }
-
     async findAll(): Promise<Task[]> {
         return this.taskModel.find().exec();
-    }
-
-    async findById(id: string): Promise<Task> {
-        const task = await this.taskModel.findById(id).exec();
-        if (!task) {
-            throw new Error(`Task with id ${id} not found`);
-        }
-        return task;
-    }
-
-    async getTaskCounts() {
-        const counts = await this.taskModel.aggregate([
-            { $group: { _id: '$status', count: { $sum: 1 } } },
-        ]);
-        return counts.reduce((acc, { _id, count }) => {
-            acc[_id] = count;
-            return acc;
-        }, {});
     }
 }
