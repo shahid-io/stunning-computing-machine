@@ -5,8 +5,8 @@
 [circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
 [circleci-url]: https://circleci.com/gh/nestjs/nest
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
+<p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
+<p align="center">
 <a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
 <a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
 <a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
@@ -14,12 +14,10 @@
 <a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
 <a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
 <a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg" alt="Donate us"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow" alt="Follow us on Twitter"></a>
+<a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg" alt="Donate us"/></a>
+<a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
+<a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow" alt="Follow us on Twitter"></a>
 </p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
 
 ## Description
 
@@ -27,27 +25,47 @@
 
 ## Overview
 
-The **Task Queue System** is a server-side application built using the [NestJS](https://nestjs.com) framework. It is designed to efficiently manage and process tasks in a queue, ensuring scalability and reliability for applications that require background job processing.
+The **Task Queue System** is a server-side application built using the [NestJS](https://nestjs.com) framework. It leverages Redis and Bull for efficient task queue management, enabling scalable and reliable background job processing.
 
 ## Features
 
-- **Task Management**: Add, process, and monitor tasks in a queue.
-- **Scalability**: Built to handle high volumes of tasks with ease.
-- **Extensibility**: Easily extendable to integrate with various task processing libraries.
-- **Monitoring**: Provides insights into task statuses and performance.
-- **Built with NestJS**: Leverages the power of NestJS for modular and maintainable code.
+- **Task Queue Management**: Add, process, and monitor tasks in a queue.
+- **Retry Mechanism**: Configurable retry attempts with exponential backoff.
+- **Rate Limiting**: Control the rate of task processing.
+- **Dashboard**: Visualize and manage queues using Bull Board.
+- **Extensibility**: Modular design for easy integration with additional features.
+
+## Architecture
+
+The application is structured into the following key modules:
+
+1. **Tasks Module**:
+   - Handles task creation, processing, and status updates.
+   - Uses MongoDB for task persistence and Bull for queue management.
+   - Includes:
+     - `TasksService`: Business logic for task operations.
+     - `TasksProcessor`: Processes tasks from the queue.
+     - `TasksController`: API endpoints for task management.
+
+2. **Queue Utilities**:
+   - Provides reusable configurations and constants for queue management.
+   - Includes rate limiting, retry strategies, and backoff configurations.
+
+3. **Bull Board Integration**:
+   - A dashboard for monitoring and managing queues.
+   - Accessible at `/admin/queues`.
 
 ## Prerequisites
 
-Before you begin, ensure you have the following installed:
+Ensure the following are installed:
 
 - [Node.js](https://nodejs.org/) (version 16 or higher)
-- [npm](https://www.npmjs.com/) (comes with Node.js)
 - [Redis](https://redis.io/) (for task queue management)
+- [MongoDB](https://www.mongodb.com/) (for task persistence)
 
 ## Installation
 
-Clone the repository and install the dependencies:
+Clone the repository and install dependencies:
 
 ```bash
 $ git clone https://github.com/your-username/task-queue-system.git
@@ -55,9 +73,25 @@ $ cd task-queue-system
 $ npm install
 ```
 
+## Configuration
+
+Set up environment variables in a `.env` file. Refer to `.env.sample` for available configurations:
+
+```env
+PORT=3000
+MONGODB_URI=mongodb://localhost:27017/TQS
+REDIS_HOST=localhost
+REDIS_PORT=6379
+QUEUE_RATE_LIMIT=5
+QUEUE_RATE_LIMIT_WINDOW=60
+QUEUE_ATTEMPTS=3
+QUEUE_BACKOFF_TYPE=exponential
+QUEUE_BACKOFF_DELAY=1000
+```
+
 ## Usage
 
-### Compile and Run the Project
+### Running the Application
 
 ```bash
 # development
@@ -70,7 +104,15 @@ $ npm run start:dev
 $ npm run start:prod
 ```
 
-### Run Tests
+### Accessing the Dashboard
+
+The Bull Board dashboard is available at:
+
+```
+http://localhost:3000/admin/queues
+```
+
+### Running Tests
 
 ```bash
 # unit tests
@@ -83,28 +125,56 @@ $ npm run test:e2e
 $ npm run test:cov
 ```
 
-### Environment Variables
+## API Endpoints
 
-Create a `.env` file in the root directory and configure the following variables:
+### Create a Task
 
-```env
-REDIS_HOST=localhost
-REDIS_PORT=6379
-QUEUE_NAME=task_queue
+**POST** `/tasks`
+
+Request Body:
+```json
+{
+  "type": "example-task"
+}
+```
+
+Response:
+```json
+{
+  "data": {
+    "_id": "task-id",
+    "type": "example-task",
+    "status": "Pending",
+    "attempts": 0
+  },
+  "message": "Task submitted successfully"
+}
+```
+
+### Get All Tasks
+
+**GET** `/tasks`
+
+Response:
+```json
+[
+  {
+    "_id": "task-id",
+    "type": "example-task",
+    "status": "Completed",
+    "attempts": 1
+  }
+]
 ```
 
 ## Deployment
 
-When you're ready to deploy your NestJS application to production, there are some key steps you can take to ensure it runs as efficiently as possible. Check out the [deployment documentation](https://docs.nestjs.com/deployment) for more information.
-
-If you are looking for a cloud-based platform to deploy your NestJS application, check out [Mau](https://mau.nestjs.com), our official platform for deploying NestJS applications on AWS. Mau makes deployment straightforward and fast, requiring just a few simple steps:
+For deployment, follow the [NestJS deployment guide](https://docs.nestjs.com/deployment).
 
 ```bash
 $ npm install -g mau
 $ mau deploy
 ```
-
-With Mau, you can deploy your application in just a few clicks, allowing you to focus on building features rather than managing infrastructure.
 
 ## Contributing
 
@@ -116,33 +186,6 @@ Contributions are welcome! To contribute:
 4. Push to the branch (`git push origin feature/your-feature`).
 5. Open a pull request.
 
-## Resources
-
-Check out a few resources that may come in handy when working with NestJS:
-
-- Visit the [NestJS Documentation](https://docs.nestjs.com) to learn more about the framework.
-- For questions and support, please visit our [Discord channel](https://discord.gg/G7Qnnhy).
-- To dive deeper and get more hands-on experience, check out our official video [courses](https://courses.nestjs.com/).
-- Deploy your application to AWS with the help of [NestJS Mau](https://mau.nestjs.com) in just a few clicks.
-- Visualize your application graph and interact with the NestJS application in real-time using [NestJS Devtools](https://devtools.nestjs.com).
-- Need help with your project (part-time to full-time)? Check out our official [enterprise support](https://enterprise.nestjs.com).
-- To stay in the loop and get updates, follow us on [X](https://x.com/nestframework) and [LinkedIn](https://linkedin.com/company/nestjs).
-- Looking for a job, or have a job to offer? Check out our official [Jobs board](https://jobs.nestjs.com).
-
-## Support
-
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
-
-If you find this project helpful, consider supporting us by starring the repository or contributing to its development.
-
-## Stay in touch
-
-- Author - [Kamil Myśliwiec](https://twitter.com/kammysliwiec)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
-
 ## License
 
 This project is licensed under the [MIT License](https://github.com/shahid-io/stunning-computing-machine/blob/main/LICENSE).
-
-Nest is [MIT licensed](https://github.com/nestjs/nest/blob/master/LICENSE).
