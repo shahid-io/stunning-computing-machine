@@ -1,0 +1,4 @@
+{
+  "buildCommand": "npm run build",
+  "startCommand": "node --max-old-space-size=1024 dist/main"
+}

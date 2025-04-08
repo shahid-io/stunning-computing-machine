@@ -68,7 +68,7 @@ Ensure the following are installed:
 Clone the repository and install dependencies:
 
 ```bash
-$ git clone https://github.com/your-username/task-queue-system.git
+$ git clone https://github.com/shahid-io/stunning-computing-machine.git
 $ cd task-queue-system
 $ npm install
 ```
