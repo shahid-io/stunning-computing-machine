@@ -25,13 +25,39 @@
 
 [Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
 
-## Project setup
+## Overview
+
+The **Task Queue System** is a server-side application built using the [NestJS](https://nestjs.com) framework. It is designed to efficiently manage and process tasks in a queue, ensuring scalability and reliability for applications that require background job processing.
+
+## Features
+
+- **Task Management**: Add, process, and monitor tasks in a queue.
+- **Scalability**: Built to handle high volumes of tasks with ease.
+- **Extensibility**: Easily extendable to integrate with various task processing libraries.
+- **Monitoring**: Provides insights into task statuses and performance.
+- **Built with NestJS**: Leverages the power of NestJS for modular and maintainable code.
+
+## Prerequisites
+
+Before you begin, ensure you have the following installed:
+
+- [Node.js](https://nodejs.org/) (version 16 or higher)
+- [npm](https://www.npmjs.com/) (comes with Node.js)
+- [Redis](https://redis.io/) (for task queue management)
+
+## Installation
+
+Clone the repository and install the dependencies:
 
 ```bash
+$ git clone https://github.com/your-username/task-queue-system.git
+$ cd task-queue-system
 $ npm install
 ```
 
-## Compile and run the project
+## Usage
+
+### Compile and Run the Project
 
 ```bash
 # development
@@ -44,7 +70,7 @@ $ npm run start:dev
 $ npm run start:prod
 ```
 
-## Run tests
+### Run Tests
 
 ```bash
 # unit tests
@@ -55,6 +81,16 @@ $ npm run test:e2e
 
 # test coverage
 $ npm run test:cov
+```
+
+### Environment Variables
+
+Create a `.env` file in the root directory and configure the following variables:
+
+```env
+REDIS_HOST=localhost
+REDIS_PORT=6379
+QUEUE_NAME=task_queue
 ```
 
 ## Deployment
@@ -69,6 +105,16 @@ $ mau deploy
 ```
 
 With Mau, you can deploy your application in just a few clicks, allowing you to focus on building features rather than managing infrastructure.
+
+## Contributing
+
+Contributions are welcome! To contribute:
+
+1. Fork the repository.
+2. Create a new branch (`git checkout -b feature/your-feature`).
+3. Commit your changes (`git commit -m 'Add some feature'`).
+4. Push to the branch (`git push origin feature/your-feature`).
+5. Open a pull request.
 
 ## Resources
 
@@ -87,6 +133,8 @@ Check out a few resources that may come in handy when working with NestJS:
 
 Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
 
+If you find this project helpful, consider supporting us by starring the repository or contributing to its development.
+
 ## Stay in touch
 
 - Author - [Kamil Myśliwiec](https://twitter.com/kammysliwiec)
@@ -94,5 +142,7 @@ Nest is an MIT-licensed open source project. It can grow thanks to the sponsors 
 - Twitter - [@nestframework](https://twitter.com/nestframework)
 
 ## License
+
+This project is licensed under the [MIT License](https://github.com/shahid-io/stunning-computing-machine/blob/main/LICENSE).
 
 Nest is [MIT licensed](https://github.com/nestjs/nest/blob/master/LICENSE).
