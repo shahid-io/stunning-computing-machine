@@ -80,8 +80,8 @@ Set up environment variables in a `.env` file. Refer to `.env.sample` for availa
 ```env
 PORT=3000
 MONGODB_URI=mongodb://localhost:27017/TQS
-REDIS_HOST=localhost
-REDIS_PORT=6379
+REDISHOST=localhost
+REDISPORT=6379
 QUEUE_RATE_LIMIT=5
 QUEUE_RATE_LIMIT_WINDOW=60
 QUEUE_ATTEMPTS=3

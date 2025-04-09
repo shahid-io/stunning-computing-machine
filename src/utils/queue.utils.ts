@@ -97,8 +97,8 @@ export const getQueueConfig = (configService: {
         },
     },
     redis: {
-        host: configService.get('REDIS_HOST') || REDIS_CONFIG.HOST,
-        port: parseInt(configService.get('REDIS_PORT') || REDIS_CONFIG.PORT.toString()),
-        password: configService.get('REDIS_PASSWORD') || REDIS_CONFIG.PASSWORD,
+        host: configService.get('REDISHOST') || REDIS_CONFIG.HOST,
+        port: parseInt(configService.get('REDISPORT') || REDIS_CONFIG.PORT.toString()),
+        password: configService.get('REDISPASSWORD') || REDIS_CONFIG.PASSWORD,
     },
 });
