@@ -36,4 +36,12 @@ export class TasksService {
     async findAll(): Promise<Task[]> {
         return this.taskModel.find().exec();
     }
+
+    async findOne(id: string): Promise<Task> {
+        const task = await this.taskModel.findById(id).exec();
+        if (!task) {
+            throw new Error(`Task with id ${id} not found`);
+        }
+        return task;
+    }
 }

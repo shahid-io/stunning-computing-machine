@@ -4,13 +4,19 @@ import { Model } from 'mongoose';
 import { Task, TaskDocument } from './schemas/task.schema';
 import { Job } from 'bull';
 import { TaskStatus } from './enums/task-status.enum';
-import { PROCESSOR_QUEUE_NAMES } from '@utils/queue.utils';
+import { getQueueConfig, QUEUE_PROCESSOR__NAMES } from '@utils/queue.utils';
+import { ConfigService } from '@nestjs/config';
 
-@Processor(PROCESSOR_QUEUE_NAMES.TASKS)
+@Processor(QUEUE_PROCESSOR__NAMES.TASKS)
 export class TasksProcessor {
-    constructor(@InjectModel(Task.name) private taskModel: Model<TaskDocument>) { }
+    constructor(
+        @InjectModel(Task.name) private taskModel: Model<TaskDocument>,
+        configService: ConfigService
+    ) { 
+        console.log(getQueueConfig(configService));
+    }
 
-    @Process(PROCESSOR_QUEUE_NAMES.PROCESS)
+    @Process(QUEUE_PROCESSOR__NAMES.PROCESS)
     async handleProcessJob(job: Job<{ taskId: string }>) {
         const task = await this.taskModel.findById(job.data.taskId);
         if (!task) throw new Error(`Task ${job.data.taskId} not found`);

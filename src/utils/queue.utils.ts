@@ -7,7 +7,7 @@ export const QUEUE_NAMES = {
 } as const;
 
 
-export const PROCESSOR_QUEUE_NAMES = {
+export const QUEUE_PROCESSOR__NAMES = {
     TASKS: 'tasks',
     PROCESS: 'process',
 } as const;
@@ -50,6 +50,15 @@ export const DEFAULT_QUEUE_CONFIG = {
 } as const;
 
 /**
+ * Default Redis configuration.
+ */
+export const REDIS_CONFIG = {
+    HOST: 'localhost',
+    PORT: 6379,
+    PASSWORD: undefined, // Optional password for Redis
+} as const;
+
+/**
  * Type representing the backoff strategy.
  */
 export type BackoffType = 'exponential' | 'fixed';
@@ -86,5 +95,10 @@ export const getQueueConfig = (configService: {
                     DEFAULT_QUEUE_CONFIG.JOB.BACKOFF.DELAY_MS.toString()
             ),
         },
+    },
+    redis: {
+        host: configService.get('REDIS_HOST') || REDIS_CONFIG.HOST,
+        port: parseInt(configService.get('REDIS_PORT') || REDIS_CONFIG.PORT.toString()),
+        password: configService.get('REDIS_PASSWORD') || REDIS_CONFIG.PASSWORD,
     },
 });
