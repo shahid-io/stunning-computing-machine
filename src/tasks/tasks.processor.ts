@@ -7,7 +7,7 @@ import { TaskStatus } from './enums/task-status.enum';
 import { getQueueConfig, QUEUE_PROCESSOR__NAMES } from '@utils/queue.utils';
 import { ConfigService } from '@nestjs/config';
 
-@Processor(QUEUE_PROCESSOR__NAMES.TASKS)
+@Processor('tasks')
 export class TasksProcessor {
     constructor(
         @InjectModel(Task.name) private taskModel: Model<TaskDocument>,
@@ -16,8 +16,9 @@ export class TasksProcessor {
         console.log(getQueueConfig(configService));
     }
 
-    @Process(QUEUE_PROCESSOR__NAMES.PROCESS)
-    async handleProcessJob(job: Job<{ taskId: string }>) {
+    @Process('process')
+    async handleTask(job: Job) {
+        console.log(`Processing task with ID: ${job.data.taskId}`);
         const task = await this.taskModel.findById(job.data.taskId);
         if (!task) throw new Error(`Task ${job.data.taskId} not found`);
 

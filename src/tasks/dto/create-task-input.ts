@@ -1,3 +1,14 @@
+import { IsNotEmpty, IsOptional, IsNumber, IsDateString } from 'class-validator';
+
 export class CreateTaskInput {
-    readonly type: string;
+  @IsNotEmpty()
+  name: string;
+
+  @IsOptional()
+  @IsNumber()
+  priority?: number;
+
+  @IsOptional()
+  @IsDateString()
+  scheduleAt?: string;
 }

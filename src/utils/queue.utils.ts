@@ -6,11 +6,11 @@ export const QUEUE_NAMES = {
     EMAILS: 'emails',
 } as const;
 
-
 export const QUEUE_PROCESSOR__NAMES = {
     TASKS: 'tasks',
     PROCESS: 'process',
 } as const;
+
 /**
  * Default configuration for queues.
  */
